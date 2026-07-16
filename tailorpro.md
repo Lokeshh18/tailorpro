@@ -106,15 +106,12 @@ By default, the application runs entirely in the browser using the **LocalStorag
 To test the server locally:
 1. Navigate to the `backend/` folder.
 2. Run `npm install` to load Express and PostgreSQL dependencies.
-3. Configure a local PostgreSQL database and set `DATABASE_URL=postgres://user:password@localhost:5432/tailorpro` in a `backend/.env` file.
+3. Configure a local PostgreSQL database and set `DATABASE_URL=postgres://user:password@localhost:5432/tailorpro` in your `backend/.env` file.
 4. Start the server using `npm start` (starts on port `5000` by default).
-5. Open [js/config.js](file:///e:/loki/Antigravity/Tailor%20Pro/js/config.js) and set:
-   ```javascript
-   const RENDER_BACKEND_URL = "http://localhost:5000";
-   ```
+5. Open your browser and navigate to `http://localhost:5000`. The frontend will be served statically from the backend server. (If viewing from port 8000 or file system, the app will dynamically redirect API traffic to port 5000).
 
 ### 3. Deploying to Render Cloud Platform
-You can host the entire system on Render's free tier:
+You can host the entire system on Render's free tier. You have two options: **Unified Deployment (Recommended)** or **Separate Deployment**.
 
 #### Step A: Create a PostgreSQL Database on Render
 1. Log in to the [Render Dashboard](https://dashboard.render.com/).
@@ -122,12 +119,13 @@ You can host the entire system on Render's free tier:
 3. Select the Free tier and click **Create Database**.
 4. Once active, copy the **Internal Database URL** or **External Database URL**.
 
-#### Step B: Deploy the Node.js Backend
+#### Step B: Deploy the Unified Web Service (Frontend & Backend Combined)
+By default, the Express server statically serves the frontend out of the box, meaning you only need to deploy **one** Render service:
 1. Push your repository to GitHub.
 2. On Render, click **New** ➔ **Web Service**.
 3. Connect your GitHub repository.
 4. Configure the Web Service settings:
-   - **Name:** `tailorpro-backend`
+   - **Name:** `tailorpro-service`
    - **Root Directory:** `backend`
    - **Runtime:** `Node`
    - **Build Command:** `npm install`
@@ -135,17 +133,18 @@ You can host the entire system on Render's free tier:
 5. Go to **Environment** tab, click **Add Environment Variable**:
    - Key: `DATABASE_URL`
    - Value: *Paste the Database URL copied in Step A.*
-6. Click **Deploy Web Service** and copy the resulting Service URL (e.g., `https://tailorpro-backend.onrender.com`).
+6. Click **Deploy Web Service**.
+*Once active, your app is fully functional! Open your Web Service URL (e.g. `https://tailorpro-service.onrender.com`) to access the complete application.*
 
-#### Step C: Deploy the Frontend
-1. Open [js/config.js](file:///e:/loki/Antigravity/Tailor%20Pro/js/config.js) and configure the URL:
+#### Step C: Deploy Separately (Optional Static Site + API Service)
+If you wish to serve the static frontend separate from your API backend:
+1. Open [js/config.js](file:///e:/loki/Antigravity/Tailor%20Pro/js/config.js) and set your deployed Backend Web Service URL:
    ```javascript
-   const RENDER_BACKEND_URL = "https://tailorpro-backend.onrender.com"; // Your Render URL
+   const SEPARATE_PRODUCTION_BACKEND_URL = "https://your-backend-service.onrender.com"; 
    ```
 2. Commit and push the frontend changes to GitHub.
 3. On Render, click **New** ➔ **Static Site**.
-4. Connect your GitHub repository and set the Root Directory as empty (root of the repo).
-5. Click **Create Static Site**.
+4. Connect your GitHub repository, set the root directory to empty (`.`), and click **Create Static Site**.
 
 ---
 
