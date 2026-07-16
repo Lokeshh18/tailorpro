@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders | TailorPro</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .step-section {
+            display: none;
+        }
+        .step-section.active {
+            display: block;
+        }
+        .design-card {
+            border: 1px solid var(--border-light) !important;
+            transition: all 0.3s ease;
+        }
+        .design-card:has(input[type="radio"]:checked) {
+            border-color: var(--accent-gold-dark) !important;
+            background-color: rgba(233, 193, 118, 0.08) !important;
+            outline: 2px solid var(--accent-gold) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Dynamic Bootstrap Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand brand-font" href="index.html">TailorPro</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <!-- Populated dynamically by app.js -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container py-5 mt-5 min-vh-100">
+        <!-- Header -->
+        <div class="row align-items-end my-5 g-4">
+            <div class="col-md-8">
+                <h1 class="display-5 brand-font mb-2">My Orders</h1>
+                <p class="text-muted text-sm font-light">Manage your sizing parameters and track your custom tailoring orders.</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <button class="btn btn-dark-atelier btn-lg px-4 py-3 shadow-sm rounded-0 text-uppercase tracking-wider font-semibold text-xs" onclick="openNewOrderModal()">
+                    <span class="material-symbols-outlined align-middle me-1">add_circle</span> NEW ORDER
+                </button>
+            </div>
+        </div>
+
+        <!-- Orders List Card -->
+        <div class="card card-traditional p-4 mb-5 border-light rounded-0">
+            <h3 class="brand-font mb-4 text-dark border-bottom pb-2">Stitching History</h3>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="ordersTable">
+                    <thead class="table-light">
+                        <tr class="text-uppercase text-muted text-xs">
+                            <th>Order ID</th>
+                            <th>Garment Design</th>
+                            <th>Date Ordered</th>
+                            <th>Tailoring Status</th>
+                            <th class="text-end">Stitching Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <!-- Loaded dynamically -->
+                        <tr>
+                            <td colspan="5" class="py-5 text-center text-muted">Loading your order history...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- New Order Modal -->
+    <div class="modal fade" id="newOrderModal" tabindex="-1" aria-labelledby="newOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 rounded-0 card-traditional">
+                <!-- Header -->
+                <div class="modal-header card-header-maroon bg-dark rounded-0 border-0">
+                    <h5 class="modal-title brand-font text-uppercase tracking-wider text-white" id="newOrderModalLabel">New Custom Stitching Request</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Body -->
+                <div class="modal-body p-4 bg-white">
+                    <!-- Progress Step Headers -->
+                    <div class="d-flex justify-content-between mb-4 border-bottom pb-3">
+                        <span class="progress-step-text active text-uppercase tracking-wider font-semibold text-xs" id="stepHeader1">1. Silhouette</span>
+                        <span class="progress-step-text text-uppercase tracking-wider font-semibold text-xs" id="stepHeader2">2. Fabric Source</span>
+                        <span class="progress-step-text text-uppercase tracking-wider font-semibold text-xs" id="stepHeader3">3. Measurements</span>
+                    </div>
+
+                    <!-- Step 1: Design Silhouette Selection -->
+                    <div class="step-section active" id="step1">
+                        <h4 class="brand-font text-center mb-4 text-dark">Choose Design Category</h4>
+                        <div class="row g-3">
+                            <!-- Premium Black Shirt -->
+                            <div class="col-6 col-md-4">
+                                <label class="w-100 text-center cursor-pointer border rounded-0 p-2 d-block hover:shadow-sm design-card">
+                                    <input class="form-check-input d-none" name="design" type="radio" value="Premium Black Shirt" checked/>
+                                    <img class="img-fluid rounded-0 mb-2 object-fit-cover" style="height: 120px; width: 100%;" src="assets/images/premium_black_shirt.jpg"/>
+                                    <span class="font-bold d-block text-xs text-uppercase tracking-wider mt-1">Premium Black Shirt</span>
+                                    <span class="text-muted text-xs">₹1,600</span>
+                                </label>
+                            </div>
+                            <!-- Linen Shirt -->
+                            <div class="col-6 col-md-4">
+                                <label class="w-100 text-center cursor-pointer border rounded-0 p-2 d-block hover:shadow-sm design-card">
+                                    <input class="form-check-input d-none" name="design" type="radio" value="Linen Shirt"/>
+                                    <img class="img-fluid rounded-0 mb-2 object-fit-cover" style="height: 120px; width: 100%;" src="assets/images/lenin_shirt"/>
+                                    <span class="font-bold d-block text-xs text-uppercase tracking-wider mt-1">Linen Shirt</span>
+                                    <span class="text-muted text-xs">₹1,400</span>
+                                </label>
+                            </div>
+                            <!-- Formal Blue Shirt -->
+                            <div class="col-6 col-md-4">
+                                <label class="w-100 text-center cursor-pointer border rounded-0 p-2 d-block hover:shadow-sm design-card">
+                                    <input class="form-check-input d-none" name="design" type="radio" value="Formal Blue Shirt"/>
+                                    <img class="img-fluid rounded-0 mb-2 object-fit-cover" style="height: 120px; width: 100%;" src="assets/images/formal_shirt_blue"/>
+                                    <span class="font-bold d-block text-xs text-uppercase tracking-wider mt-1">Formal Blue Shirt</span>
+                                    <span class="text-muted text-xs">₹1,100</span>
+                                </label>
+                            </div>
+                            <!-- Formal Red Shirt -->
+                            <div class="col-6 col-md-4">
+                                <label class="w-100 text-center cursor-pointer border rounded-0 p-2 d-block hover:shadow-sm design-card">
+                                    <input class="form-check-input d-none" name="design" type="radio" value="Formal Red Shirt"/>
+                                    <img class="img-fluid rounded-0 mb-2 object-fit-cover" style="height: 120px; width: 100%;" src="assets/images/formal_shirt_red"/>
+                                    <span class="font-bold d-block text-xs text-uppercase tracking-wider mt-1">Formal Red Shirt</span>
+                                    <span class="text-muted text-xs">₹1,100</span>
+                                </label>
+                            </div>
+                            <!-- Formal Lined Shirt -->
+                            <div class="col-6 col-md-4">
+                                <label class="w-100 text-center cursor-pointer border rounded-0 p-2 d-block hover:shadow-sm design-card">
+                                    <input class="form-check-input d-none" name="design" type="radio" value="Formal Lined Shirt"/>
+                                    <img class="img-fluid rounded-0 mb-2 object-fit-cover" style="height: 120px; width: 100%;" src="assets/images/formal_shirt_lined"/>
+                                    <span class="font-bold d-block text-xs text-uppercase tracking-wider mt-1">Formal Lined Shirt</span>
+                                    <span class="text-muted text-xs">₹1,200</span>
+                                </label>
+                            </div>
+                            <!-- Casual T-Shirt -->
+                            <div class="col-6 col-md-4">
+                                <label class="w-100 text-center cursor-pointer border rounded-0 p-2 d-block hover:shadow-sm design-card">
+                                    <input class="form-check-input d-none" name="design" type="radio" value="Casual T-Shirt"/>
+                                    <img class="img-fluid rounded-0 mb-2 object-fit-cover" style="height: 120px; width: 100%;" src="assets/images/t_shirt.jfif"/>
+                                    <span class="font-bold d-block text-xs text-uppercase tracking-wider mt-1">Casual T-Shirt</span>
+                                    <span class="text-muted text-xs">₹700</span>
+                                </label>
+                            </div>
+                            <!-- Modern Hoodie -->
+                            <div class="col-6 col-md-4">
+                                <label class="w-100 text-center cursor-pointer border rounded-0 p-2 d-block hover:shadow-sm design-card">
+                                    <input class="form-check-input d-none" name="design" type="radio" value="Modern Hoodie"/>
+                                    <img class="img-fluid rounded-0 mb-2 object-fit-cover" style="height: 120px; width: 100%;" src="assets/images/hoodie.jpg"/>
+                                    <span class="font-bold d-block text-xs text-uppercase tracking-wider mt-1">Modern Hoodie</span>
+                                    <span class="text-muted text-xs">₹1,800</span>
+                                </label>
+                            </div>
+                            <!-- Formal Black Pant -->
+                            <div class="col-6 col-md-4">
+                                <label class="w-100 text-center cursor-pointer border rounded-0 p-2 d-block hover:shadow-sm design-card">
+                                    <input class="form-check-input d-none" name="design" type="radio" value="Formal Black Pant"/>
+                                    <img class="img-fluid rounded-0 mb-2 object-fit-cover" style="height: 120px; width: 100%;" src="assets/images/formal_pant_black.jpg"/>
+                                    <span class="font-bold d-block text-xs text-uppercase tracking-wider mt-1">Formal Black Pant</span>
+                                    <span class="text-muted text-xs">₹1,500</span>
+                                </label>
+                            </div>
+                            <!-- Formal Grey Pant -->
+                            <div class="col-6 col-md-4">
+                                <label class="w-100 text-center cursor-pointer border rounded-0 p-2 d-block hover:shadow-sm design-card">
+                                    <input class="form-check-input d-none" name="design" type="radio" value="Formal Grey Pant"/>
+                                    <img class="img-fluid rounded-0 mb-2 object-fit-cover" style="height: 120px; width: 100%;" src="assets/images/formal_pant_grey"/>
+                                    <span class="font-bold d-block text-xs text-uppercase tracking-wider mt-1">Formal Grey Pant</span>
+                                    <span class="text-muted text-xs">₹1,500</span>
+                                </label>
+                            </div>
+                            <!-- Formal Sandal Pant -->
+                            <div class="col-6 col-md-4">
+                                <label class="w-100 text-center cursor-pointer border rounded-0 p-2 d-block hover:shadow-sm design-card">
+                                    <input class="form-check-input d-none" name="design" type="radio" value="Formal Sandal Pant"/>
+                                    <img class="img-fluid rounded-0 mb-2 object-fit-cover" style="height: 120px; width: 100%;" src="assets/images/formal_pant_sandal.png"/>
+                                    <span class="font-bold d-block text-xs text-uppercase tracking-wider mt-1">Formal Sandal Pant</span>
+                                    <span class="text-muted text-xs">₹1,500</span>
+                                </label>
+                            </div>
+                            <!-- Baggy Pants -->
+                            <div class="col-6 col-md-4">
+                                <label class="w-100 text-center cursor-pointer border rounded-0 p-2 d-block hover:shadow-sm design-card">
+                                    <input class="form-check-input d-none" name="design" type="radio" value="Baggy Pants"/>
+                                    <img class="img-fluid rounded-0 mb-2 object-fit-cover" style="height: 120px; width: 100%;" src="assets/images/baggy_pants"/>
+                                    <span class="font-bold d-block text-xs text-uppercase tracking-wider mt-1">Baggy Pants</span>
+                                    <span class="text-muted text-xs">₹1,200</span>
+                                </label>
+                            </div>
+                            <!-- Casual Shorts -->
+                            <div class="col-6 col-md-4">
+                                <label class="w-100 text-center cursor-pointer border rounded-0 p-2 d-block hover:shadow-sm design-card">
+                                    <input class="form-check-input d-none" name="design" type="radio" value="Casual Shorts"/>
+                                    <img class="img-fluid rounded-0 mb-2 object-fit-cover" style="height: 120px; width: 100%;" src="assets/images/shorts"/>
+                                    <span class="font-bold d-block text-xs text-uppercase tracking-wider mt-1">Casual Shorts</span>
+                                    <span class="text-muted text-xs">₹800</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Fabric Material Choice -->
+                    <div class="step-section" id="step2">
+                        <h4 class="brand-font text-center mb-4 text-dark">Select Fabric Source</h4>
+                        <div class="row g-4 justify-content-center">
+                            <div class="col-md-5">
+                                <label class="cursor-pointer text-center border rounded-0 p-4 d-block h-100 hover:shadow-sm design-card">
+                                    <input class="form-check-input mb-3" name="fabric" type="radio" value="Customer Supplied Fabric" checked/>
+                                    <span class="material-symbols-outlined text-dark display-4 d-block mb-3">hanger</span>
+                                    <h5 class="brand-font">Send Own Fabric</h5>
+                                    <p class="text-muted text-xs mt-2">You will drop off or ship the clothing fabric to our shop address.</p>
+                                </label>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="cursor-pointer text-center border rounded-0 p-4 d-block h-100 hover:shadow-sm design-card">
+                                    <input class="form-check-input mb-3" name="fabric" type="radio" value="TailorPro Premium Fabric"/>
+                                    <span class="material-symbols-outlined text-dark display-4 d-block mb-3">inventory_2</span>
+                                    <h5 class="brand-font">Use Shop Fabric</h5>
+                                    <p class="text-muted text-xs mt-2">We will supply premium cotton, linen, or denim fabric from our stock.</p>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Body Measurements & Details -->
+                    <div class="step-section" id="step3">
+                        <h4 class="brand-font text-center mb-4 text-dark">Input Tailoring Measurements (Inches)</h4>
+                        <div class="row g-3">
+                            <div class="col-md-6" id="col_left">
+                                <div class="mb-3" id="div_shoulder">
+                                    <label class="form-label text-muted text-xs font-semibold uppercase tracking-wider" id="lbl_shoulder">Shoulder Width</label>
+                                    <input id="m_shoulder" class="form-control form-input-line font-bold" placeholder="e.g. 15.5" type="number" step="0.1" required/>
+                                </div>
+                                <div class="mb-3" id="div_chest">
+                                    <label class="form-label text-muted text-xs font-semibold uppercase tracking-wider" id="lbl_chest">Chest Size</label>
+                                    <input id="m_chest" class="form-control form-input-line font-bold" placeholder="e.g. 38.0" type="number" step="0.1" required/>
+                                </div>
+                                <div class="mb-3" id="div_waist">
+                                    <label class="form-label text-muted text-xs font-semibold uppercase tracking-wider" id="lbl_waist">Waist Size</label>
+                                    <input id="m_waist" class="form-control form-input-line font-bold" placeholder="e.g. 32.0" type="number" step="0.1" required/>
+                                </div>
+                            </div>
+                            <div class="col-md-6" id="col_right">
+                                <div class="mb-3" id="div_sleeve">
+                                    <label class="form-label text-muted text-xs font-semibold uppercase tracking-wider" id="lbl_sleeve">Sleeve Length</label>
+                                    <input id="m_sleeve" class="form-control form-input-line font-bold" placeholder="e.g. 24.5" type="number" step="0.1" required/>
+                                </div>
+                                <div class="mb-3" id="div_neck">
+                                    <label class="form-label text-muted text-xs font-semibold uppercase tracking-wider" id="lbl_neck">Neck Circumference</label>
+                                    <input id="m_neck" class="form-control form-input-line font-bold" placeholder="e.g. 15.0" type="number" step="0.1" required/>
+                                </div>
+                                <div class="mb-3" id="div_height">
+                                    <label class="form-label text-muted text-xs font-semibold uppercase tracking-wider" id="lbl_height">Garment Length</label>
+                                    <input id="m_height" class="form-control form-input-line font-bold" placeholder="e.g. 28.5 (for Shirt) or 40.0 (for Pant)" type="number" step="0.1" required/>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted text-xs font-semibold uppercase tracking-wider">Contact Phone Number</label>
+                                    <input id="orderPhone" class="form-control form-input-line font-bold" placeholder="e.g. 8973911995" type="text" required/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-muted text-xs font-semibold uppercase tracking-wider">Delivery Address</label>
+                                    <textarea id="orderAddress" class="form-control border-light rounded-0" placeholder="Enter full delivery address for shipping..." rows="2" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-muted text-xs font-semibold uppercase tracking-wider">Special Design Notes & Neck Shapes</label>
+                                    <textarea id="orderReqs" class="form-control border-light rounded-0" placeholder="Mention sleeve style, collar type, fit preference, pocket details..." rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Footer -->
+                <div class="modal-footer justify-content-between p-3 bg-light rounded-0">
+                    <button type="button" class="btn btn-outline-secondary px-4 py-2 rounded-0 text-uppercase tracking-wider font-semibold text-xs" id="prevBtn" onclick="prevStep()" style="visibility: hidden;">PREVIOUS</button>
+                    <button type="button" class="btn btn-dark-atelier px-5 py-2 rounded-0 text-uppercase tracking-wider font-semibold text-xs" id="nextBtn" onclick="nextStep()">CONTINUE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Footer -->
+    <footer class="footer-custom py-5 mt-auto">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h4 class="brand-font mb-4 text-dark">TailorPro</h4>
+                    <p class="opacity-75 text-sm">Stitching modern formal and casual wear with digital precision fitting, cloud tracking, and premium craftsmanship.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="brand-font mb-4 text-xs font-bold text-uppercase tracking-wider text-dark">Quick Links</h5>
+                    <ul class="list-unstyled space-y-2 text-sm">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="gallery.html">Garment Gallery</a></li>
+                        <li><a href="orders.html">Place Stitching Order</a></li>
+                        <li><a href="feedback.html">Customer Reviews</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="brand-font mb-4 text-xs font-bold text-uppercase tracking-wider text-dark">Our Location</h5>
+                    <p class="opacity-75 text-sm leading-relaxed">
+                        Palladam<br>
+                        Tirupur, Tamil Nadu<br>
+                        641664, India<br>
+                        Phone: 8973911995
+                    </p>
+                </div>
+            </div>
+            <hr class="border-light opacity-50 my-4">
+            <div class="text-center opacity-75 text-xs text-uppercase tracking-wider">
+                © 2026 TailorPro. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Supabase Cloud SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Config and Controllers -->
+    <script src="js/config.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+        let bsModal = null;
+
+        document.addEventListener("DOMContentLoaded", async function() {
+            // Load and display orders
+            await loadUserOrders();
+            
+            // Check url params for preselected dress silhouette
+            const urlParams = new URLSearchParams(window.location.search);
+            const preselectedDress = urlParams.get('dress');
+            if (preselectedDress) {
+                const radio = document.querySelector(`input[name="design"][value="${preselectedDress}"]`);
+                if (radio) {
+                    radio.checked = true;
+                }
+                openNewOrderModal();
+            }
+        });
+
+        // Load current logged-in user orders and render in table
+        async function loadUserOrders() {
+            const user = JSON.parse(localStorage.getItem("tailorpro_current_user"));
+            if (!user) return;
+            
+            const tbody = document.getElementById("ordersTableBody");
+            try {
+                const orders = await window.db.getOrders(user.email);
+                
+                if (orders.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="py-5 text-center text-muted">You haven't placed any stitching orders yet. Click <strong>NEW ORDER</strong> to place one.</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                let html = "";
+                orders.forEach(order => {
+                    const formattedDate = new Date(order.order_date).toLocaleDateString("en-IN", {
+                        year: 'numeric', month: 'short', day: 'numeric'
+                    });
+                    
+                    // Render status badge
+                    let statusBadge = "";
+                    if (order.order_status === "Measuring") {
+                        statusBadge = `<span class="badge bg-warning text-dark px-3 py-2 rounded-0"><span class="spinner-grow spinner-grow-sm me-1" style="width: 8px; height: 8px;"></span>Measuring</span>`;
+                    } else if (order.order_status === "Tailoring" || order.order_status === "In Production") {
+                        statusBadge = `<span class="badge bg-dark text-white px-3 py-2 rounded-0"><span class="spinner-grow spinner-grow-sm me-1" style="width: 8px; height: 8px;"></span>Stitching</span>`;
+                    } else if (order.order_status === "Fitting" || order.order_status === "Ready for Fitting") {
+                        statusBadge = `<span class="badge bg-secondary px-3 py-2 rounded-0">Trial Fitting</span>`;
+                    } else if (order.order_status === "Shipped") {
+                        statusBadge = `<span class="badge bg-secondary px-3 py-2 rounded-0">Dispatched</span>`;
+                    } else if (order.order_status === "Delivered") {
+                        statusBadge = `<span class="badge bg-success px-3 py-2 rounded-0">Delivered</span>`;
+                    }
+
+                    // Dynamically map design names to image paths
+                    let imgUrl = "assets/images/premium_black_shirt.jpg";
+                    const dt = order.dress_type.toLowerCase();
+                    if (dt.includes("linen") || dt.includes("lenin")) imgUrl = "assets/images/lenin_shirt";
+                    else if (dt.includes("blue shirt")) imgUrl = "assets/images/formal_shirt_blue";
+                    else if (dt.includes("red shirt")) imgUrl = "assets/images/formal_shirt_red";
+                    else if (dt.includes("lined shirt")) imgUrl = "assets/images/formal_shirt_lined";
+                    else if (dt.includes("t-shirt") || dt.includes("t_shirt")) imgUrl = "assets/images/t_shirt.jfif";
+                    else if (dt.includes("hoodie")) imgUrl = "assets/images/hoodie.jpg";
+                    else if (dt.includes("black pant")) imgUrl = "assets/images/formal_pant_black.jpg";
+                    else if (dt.includes("grey pant")) imgUrl = "assets/images/formal_pant_grey";
+                    else if (dt.includes("sandal pant")) imgUrl = "assets/images/formal_pant_sandal.png";
+                    else if (dt.includes("baggy")) imgUrl = "assets/images/baggy_pants";
+                    else if (dt.includes("shorts")) imgUrl = "assets/images/shorts";
+
+                    html += `
+                        <tr>
+                            <td class="py-4 font-bold text-dark">#TP-${order.order_id || 'TEMP'}</td>
+                            <td class="py-4 brand-font text-dark font-semibold">
+                                <div class="d-flex align-items-center">
+                                    <img src="${imgUrl}" alt="${order.dress_type}" style="width: 45px; height: 45px; object-fit: cover;" class="me-3 border border-light rounded">
+                                    <span>${order.dress_type}</span>
+                                </div>
+                            </td>
+                            <td class="py-4 text-muted">${formattedDate}</td>
+                            <td class="py-4">${statusBadge}</td>
+                            <td class="py-4 text-end font-bold text-dark">₹${order.price.toLocaleString("en-IN", {minimumFractionDigits: 2})}</td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            } catch (err) {
+                console.error("Error loading user orders:", err);
+                tbody.innerHTML = `<tr><td colspan="5" class="py-5 text-center text-danger">Failed to load orders.</td></tr>`;
+            }
+        }
+
+        function openNewOrderModal() {
+            const modalEl = document.getElementById('newOrderModal');
+            bsModal = new bootstrap.Modal(modalEl);
+            bsModal.show();
+            resetToStep(1);
+        }
+
+        function closeNewOrderModal() {
+            if (bsModal) {
+                bsModal.hide();
+            }
+        }
+
+        function updateStepUI() {
+            // Update Text & Progress headers
+            for (let i = 1; i <= totalSteps; i++) {
+                const header = document.getElementById('stepHeader' + i);
+                const section = document.getElementById('step' + i);
+                
+                if (i === currentStep) {
+                    header.classList.add('active', 'text-dark', 'font-bold');
+                    section.classList.add('active');
+                } else {
+                    header.classList.remove('active', 'text-dark', 'font-bold');
+                    section.classList.remove('active');
+                }
+            }
+
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (currentStep === 1) {
+                prevBtn.style.visibility = 'hidden';
+            } else {
+                prevBtn.style.visibility = 'visible';
+            }
+
+            if (currentStep === totalSteps) {
+                nextBtn.innerText = 'FINALIZE ORDER';
+            } else {
+                nextBtn.innerText = 'CONTINUE';
+            }
+
+            // DYNAMIC MEASUREMENT LABELS UPDATE FOR STEP 3
+            if (currentStep === 3) {
+                const checkedRadio = document.querySelector('input[name="design"]:checked');
+                const dressType = checkedRadio ? checkedRadio.value : "Premium Black Shirt";
+                const isBottom = ["formal black pant", "formal grey pant", "formal sandal pant", "baggy pants", "casual shorts"].includes(dressType.toLowerCase());
+                
+                const divSleeve = document.getElementById("div_sleeve");
+                const divNeck = document.getElementById("div_neck");
+                const lblShoulder = document.getElementById("lbl_shoulder");
+                const inputShoulder = document.getElementById("m_shoulder");
+                const lblChest = document.getElementById("lbl_chest");
+                const inputChest = document.getElementById("m_chest");
+                const lblHeight = document.getElementById("lbl_height");
+                const inputHeight = document.getElementById("m_height");
+                
+                if (isBottom) {
+                    divSleeve.style.display = "none";
+                    divNeck.style.display = "none";
+                    lblShoulder.innerText = "Thigh Circumference";
+                    inputShoulder.placeholder = "e.g. 22.0";
+                    lblChest.innerText = "Hip Size";
+                    inputChest.placeholder = "e.g. 38.0";
+                    lblHeight.innerText = "Outseam Length";
+                    inputHeight.placeholder = "e.g. 40.0";
+                } else {
+                    divSleeve.style.display = "block";
+                    divNeck.style.display = "block";
+                    lblShoulder.innerText = "Shoulder Width";
+                    inputShoulder.placeholder = "e.g. 15.5";
+                    lblChest.innerText = "Chest Size";
+                    inputChest.placeholder = "e.g. 38.0";
+                    lblHeight.innerText = "Garment Length";
+                    inputHeight.placeholder = "e.g. 28.5 (for Shirt) or 40.0 (for Pant)";
+                }
+            }
+        }
+
+        async function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateStepUI();
+            } else {
+                // Submit Form
+                const user = JSON.parse(localStorage.getItem("tailorpro_current_user"));
+                if (!user) {
+                    alert("Session expired. Please sign in again.");
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                const dressType = document.querySelector('input[name="design"]:checked').value;
+                const fabricType = document.querySelector('input[name="fabric"]:checked').value;
+                const isBottom = ["formal black pant", "formal grey pant", "formal sandal pant", "baggy pants", "casual shorts"].includes(dressType.toLowerCase());
+                
+                const shoulder = document.getElementById("m_shoulder").value;
+                const chest = document.getElementById("m_chest").value;
+                const waist = document.getElementById("m_waist").value;
+                const sleeve = isBottom ? "0" : document.getElementById("m_sleeve").value;
+                const height = document.getElementById("m_height").value;
+                const neck = isBottom ? "0" : document.getElementById("m_neck").value;
+                const phone = document.getElementById("orderPhone").value;
+                const address = document.getElementById("orderAddress").value;
+                const customReqs = document.getElementById("orderReqs").value;
+
+                if (!shoulder || !chest || !waist || !sleeve || !height || !neck || !phone || !address) {
+                    alert("Please fill in all measurements, delivery address, and your phone number.");
+                    return;
+                }
+
+                // Save user address locally in profile
+                user.address = address;
+                localStorage.setItem("tailorpro_current_user", JSON.stringify(user));
+
+                const orderData = {
+                    customer_name: user.name,
+                    email: user.email,
+                    phone: phone,
+                    dress_type: dressType,
+                    chest: chest,
+                    waist: waist,
+                    shoulder: shoulder,
+                    sleeve: sleeve,
+                    height: height,
+                    requirements: `Fabric: ${fabricType}. Address: ${address}. Neck Size: ${neck}". Notes: ${customReqs}`
+                };
+
+                const nextBtn = document.getElementById("nextBtn");
+                nextBtn.disabled = true;
+                nextBtn.innerText = "SUBMITTING...";
+
+                try {
+                    const result = await window.db.createOrder(orderData);
+                    if (result.success) {
+                        alert(`Stitching Order registered successfully! ID: #TP-${result.order.order_id}`);
+                        closeNewOrderModal();
+                        await loadUserOrders();
+                    } else {
+                        alert("Error: " + result.message);
+                    }
+                } catch (err) {
+                    console.error("Order error:", err);
+                    alert("Failed to submit order.");
+                } finally {
+                    nextBtn.disabled = false;
+                    nextBtn.innerText = "FINALIZE ORDER";
+                }
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepUI();
+            }
+        }
+
+        function resetToStep(step) {
+            currentStep = step;
+            updateStepUI();
+            
+            // Reset inputs
+            document.getElementById("m_shoulder").value = "";
+            document.getElementById("m_chest").value = "";
+            document.getElementById("m_waist").value = "";
+            document.getElementById("m_sleeve").value = "";
+            document.getElementById("m_neck").value = "";
+            document.getElementById("m_height").value = "";
+            document.getElementById("orderPhone").value = "";
+            document.getElementById("orderReqs").value = "";
+            
+            const savedUser = JSON.parse(localStorage.getItem("tailorpro_current_user"));
+            if (savedUser && savedUser.address) {
+                document.getElementById("orderAddress").value = savedUser.address;
+            } else {
+                document.getElementById("orderAddress").value = "";
+            }
+        }
+    </script>
+</body>
+</html>

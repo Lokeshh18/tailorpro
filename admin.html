@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TailorPro Admin | Studio Management</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-light">
+
+    <!-- Dynamic Bootstrap Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand brand-font" href="index.html">TailorPro Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <!-- Populated dynamically by app.js -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container py-5 mt-5">
+        <!-- Header -->
+        <div class="my-5">
+            <h1 class="display-5 brand-font mb-2">Studio Management</h1>
+            <p class="text-muted text-sm font-light">Monitor orders, manage statuses, and view registered customers in your database.</p>
+        </div>
+
+        <!-- Stats row -->
+        <div class="row g-4 mb-5">
+            <!-- Stat -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="card card-traditional p-4 text-center rounded-0 border-light">
+                    <span class="text-xs text-muted font-semibold uppercase tracking-wider mb-2">Total Customers</span>
+                    <h2 class="display-6 brand-font text-dark m-0" id="statCustomers">0</h2>
+                </div>
+            </div>
+            <!-- Stat -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="card card-traditional p-4 text-center rounded-0 border-light">
+                    <span class="text-xs text-muted font-semibold uppercase tracking-wider mb-2">Total Orders</span>
+                    <h2 class="display-6 brand-font text-dark m-0" id="statOrders">0</h2>
+                </div>
+            </div>
+            <!-- Stat -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="card card-traditional p-4 text-center rounded-0 border-light">
+                    <span class="text-xs text-muted font-semibold uppercase tracking-wider mb-2">In Stitching</span>
+                    <h2 class="display-6 brand-font text-dark m-0" id="statInTailoring">0</h2>
+                </div>
+            </div>
+            <!-- Stat -->
+            <div class="col-sm-6 col-lg-3">
+                <div class="card card-traditional p-4 text-center rounded-0 border-light">
+                    <span class="text-xs text-muted font-semibold uppercase tracking-wider mb-2">Delivered</span>
+                    <h2 class="display-6 brand-font text-dark m-0" id="statDelivered">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Customer Directory Column -->
+            <div class="col-lg-5">
+                <div class="card card-traditional p-4 h-100 rounded-0 border-light">
+                    <h3 class="brand-font mb-4 text-dark border-bottom pb-2">Customer Directory</h3>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle" id="customersTable">
+                            <thead class="table-light">
+                                <tr class="text-xs text-uppercase text-muted">
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody" class="text-sm">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Orders Column -->
+            <div class="col-lg-7">
+                <div class="card card-traditional p-4 h-100 rounded-0 border-light">
+                    <h3 class="brand-font mb-4 text-dark border-bottom pb-2">Active Orders</h3>
+                    <div id="adminOrdersContainer" class="space-y-4">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Custom Footer -->
+    <footer class="footer-custom py-5 mt-5">
+        <div class="container">
+            <div class="text-center opacity-75 text-xs text-uppercase tracking-wider">
+                © 2026 TailorPro Admin. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Supabase Cloud SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Config and Controllers -->
+    <script src="js/config.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = JSON.parse(localStorage.getItem("tailorpro_current_user"));
+            if (!user || user.email !== "admin@tailorpro.com") {
+                alert("Access Denied: Admin account login required.");
+                window.location.href = "index.html";
+                return;
+            }
+
+            await loadAdminDashboard();
+        });
+
+        async function loadAdminDashboard() {
+            try {
+                // 1. Fetch Users
+                let users = [];
+                if (window.db.isSupabaseActive) {
+                    const { data } = await supabaseClient.from('users').select('*');
+                    users = data || [];
+                } else {
+                    users = JSON.parse(localStorage.getItem("tailorpro_users") || "[]");
+                }
+
+                // Render Customer Directory
+                const userTbody = document.getElementById("customersTableBody");
+                let userHtml = "";
+                users.forEach(u => {
+                    userHtml += `
+                        <tr>
+                            <td class="py-3 font-semibold">${u.name}</td>
+                            <td class="py-3 text-muted">${u.email}</td>
+                        </tr>
+                    `;
+                });
+                userTbody.innerHTML = userHtml || `<tr><td colspan="2" class="p-3 text-center">No registered customers.</td></tr>`;
+
+                // 2. Fetch Orders
+                const orders = await window.db.getAllOrders();
+
+                // Compute Statistics
+                const customerCount = users.length;
+                const orderCount = orders.length;
+                const tailoringCount = orders.filter(o => o.order_status === "Tailoring" || o.order_status === "In Production" || o.order_status === "Measuring").length;
+                const deliveredCount = orders.filter(o => o.order_status === "Delivered").length;
+
+                document.getElementById("statCustomers").innerText = customerCount;
+                document.getElementById("statOrders").innerText = orderCount;
+                document.getElementById("statInTailoring").innerText = tailoringCount;
+                document.getElementById("statDelivered").innerText = deliveredCount;
+
+                // Render Active Orders
+                const activeOrders = orders.filter(o => o.order_status !== "Delivered");
+                const orderContainer = document.getElementById("adminOrdersContainer");
+                
+                if (activeOrders.length === 0) {
+                    orderContainer.innerHTML = `<p class="text-muted text-center py-5">No active orders to stitch.</p>`;
+                    return;
+                }
+
+                let orderHtml = "";
+                activeOrders.forEach(order => {
+                    const formattedDate = new Date(order.order_date).toLocaleDateString("en-IN", {
+                        year: 'numeric', month: 'short', day: 'numeric'
+                    });
+
+                    // Set select option classes
+                    let statusBgClass = "bg-warning text-dark";
+                    if (order.order_status === "Tailoring" || order.order_status === "In Production") statusBgClass = "bg-dark text-white";
+                    if (order.order_status === "Fitting" || order.order_status === "Ready for Fitting") statusBgClass = "bg-secondary text-white";
+                    if (order.order_status === "Shipped") statusBgClass = "bg-secondary text-white";
+
+                    // Image matching
+                    let imgUrl = "assets/images/premium_black_shirt.jpg";
+                    const dt = order.dress_type.toLowerCase();
+                    if (dt.includes("linen") || dt.includes("lenin")) imgUrl = "assets/images/lenin_shirt";
+                    else if (dt.includes("blue shirt")) imgUrl = "assets/images/formal_shirt_blue";
+                    else if (dt.includes("red shirt")) imgUrl = "assets/images/formal_shirt_red";
+                    else if (dt.includes("lined shirt")) imgUrl = "assets/images/formal_shirt_lined";
+                    else if (dt.includes("t-shirt") || dt.includes("t_shirt")) imgUrl = "assets/images/t_shirt.jfif";
+                    else if (dt.includes("hoodie")) imgUrl = "assets/images/hoodie.jpg";
+                    else if (dt.includes("black pant")) imgUrl = "assets/images/formal_pant_black.jpg";
+                    else if (dt.includes("grey pant")) imgUrl = "assets/images/formal_pant_grey";
+                    else if (dt.includes("sandal pant")) imgUrl = "assets/images/formal_pant_sandal.png";
+                    else if (dt.includes("baggy")) imgUrl = "assets/images/baggy_pants";
+                    else if (dt.includes("shorts")) imgUrl = "assets/images/shorts";
+
+                    orderHtml += `
+                        <div class="row align-items-center mb-4 g-3">
+                            <div class="col-3 col-sm-2 col-lg-2">
+                                <img class="img-fluid rounded border border-light" src="${imgUrl}" alt="Garment Image">
+                            </div>
+                            <div class="col-9 col-sm-10 col-lg-10">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="brand-font text-dark m-0 fs-6">#TP-${order.order_id} — ${order.dress_type}</h5>
+                                        <p class="text-xs text-muted mb-1">Customer: ${order.customer_name} (${order.email})</p>
+                                        <p class="text-xs text-muted">Phone: ${order.phone} | Ordered: ${formattedDate}</p>
+                                        <p class="text-xs text-secondary mt-1 font-semibold">Measurements: Sh: ${order.shoulder}" | Ch: ${order.chest}" | Wt: ${order.waist}" | Sl: ${order.sleeve}" | Ht: ${order.height}"</p>
+                                        <p class="text-[11px] text-muted italic mt-1">${order.requirements}</p>
+                                    </div>
+                                    <div class="text-end ms-3">
+                                        <p class="text-sm font-bold text-dark mb-2">₹${order.price.toLocaleString("en-IN")}</p>
+                                        <select onchange="updateStatus('${order.order_id}', this.value)" class="form-select form-select-sm ${statusBgClass} rounded-0 border-0 font-semibold cursor-pointer py-1 px-3" style="font-size: 11px;">
+                                            <option value="Measuring" ${order.order_status === "Measuring" ? "selected" : ""}>Measuring</option>
+                                            <option value="Tailoring" ${order.order_status === "Tailoring" || order.order_status === "In Production" ? "selected" : ""}>Stitching</option>
+                                            <option value="Fitting" ${order.order_status === "Fitting" || order.order_status === "Ready for Fitting" ? "selected" : ""}>Trial Fitting</option>
+                                            <option value="Shipped" ${order.order_status === "Shipped" ? "selected" : ""}>Dispatched</option>
+                                            <option value="Delivered" ${order.order_status === "Delivered" ? "selected" : ""}>Delivered</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="border-light opacity-50 my-3">
+                    `;
+                });
+                
+                // Remove trailing hr
+                if (html = orderHtml) {
+                    if (html.endsWith('<hr class="border-light opacity-50 my-3">')) {
+                        html = html.substring(0, html.lastIndexOf('<hr class="border-light opacity-50 my-3">'));
+                    }
+                }
+                orderContainer.innerHTML = html;
+
+            } catch (err) {
+                console.error("Error loading admin board:", err);
+            }
+        }
+
+        async function updateStatus(orderId, newStatus) {
+            try {
+                const res = await window.db.updateOrderStatus(orderId, newStatus);
+                if (res.success) {
+                    alert(`Order #TP-${orderId} status updated successfully to ${newStatus}`);
+                    await loadAdminDashboard();
+                } else {
+                    alert("Failed to update status: " + res.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Failed to update status.");
+            }
+        }
+    </script>
+</body>
+</html>

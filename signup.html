@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | TailorPro</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-light min-vh-100 flex flex-column justify-content-between">
+
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand brand-font" href="index.html">TailorPro</a>
+            <span class="text-dark text-xs font-semibold uppercase tracking-wider cursor-pointer" onclick="window.location.href='index.html'">Back to Home</span>
+        </div>
+    </nav>
+
+    <!-- Signup Form Card -->
+    <main class="container my-5 flex-grow-1 d-flex align-items-center justify-content-center">
+        <div class="card card-traditional p-4 p-md-5 w-100 rounded-0 border-light" style="max-width: 450px;">
+            <div class="text-center mb-4">
+                <span class="text-xs text-muted font-semibold uppercase tracking-wider block mb-1">Join Us</span>
+                <h2 class="brand-font text-dark m-0">Create Account</h2>
+            </div>
+            
+            <form onsubmit="handleSignup(event)" id="signupForm">
+                <div class="mb-3">
+                    <label class="form-label text-xs font-semibold text-muted uppercase tracking-wider block mb-1">Full Name</label>
+                    <input type="text" id="name" class="form-control form-input-line font-bold" placeholder="Example Name" required/>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-xs font-semibold text-muted uppercase tracking-wider block mb-1">Email Address</label>
+                    <input type="email" id="email" class="form-control form-input-line font-bold" placeholder="lokesh@example.com" required/>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-xs font-semibold text-muted uppercase tracking-wider block mb-1">Password</label>
+                    <input type="password" id="password" class="form-control form-input-line font-bold" placeholder="••••••••" required/>
+                </div>
+                <div class="mb-3 pt-2">
+                    <button type="submit" class="btn btn-dark-atelier w-100 py-3 font-semibold uppercase tracking-wider rounded-0" id="signupBtn">CREATE ACCOUNT</button>
+                </div>
+            </form>
+
+            <div class="mt-4 pt-3 border-top border-light text-center">
+                <p class="text-xs text-muted m-0">
+                    Already have an account? 
+                    <a href="login.html" class="text-dark font-bold ms-1">Sign In</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Custom Footer -->
+    <footer class="footer-custom py-4 text-center text-xs opacity-75 mt-auto">
+        © 2026 TailorPro. All Rights Reserved.
+    </footer>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Supabase Cloud SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Config and Controllers -->
+    <script src="js/config.js"></script>
+    <script src="js/db.js"></script>
+    <script>
+        async function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            const btn = document.getElementById("signupBtn");
+            btn.disabled = true;
+            btn.innerText = "CREATING ACCOUNT...";
+
+            try {
+                const res = await window.db.signUpUser(name, email, password);
+                if (res.success) {
+                    alert("Account created successfully! Please login with your credentials.");
+                    window.location.href = "login.html";
+                } else {
+                    alert(res.message);
+                }
+            } catch (err) {
+                console.error("Signup error:", err);
+                alert("Failed to create account. Please try again.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "CREATE ACCOUNT";
+            }
+        }
+    </script>
+</body>
+</html>

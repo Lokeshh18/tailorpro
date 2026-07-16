@@ -1,0 +1,168 @@
+/* Tailor Pro - Original Atelier Theme (Bootstrap 5) */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-dark: #000000;
+    --accent-gold: #e9c176;
+    --accent-gold-dark: #785a1a;
+    --parchment-bg: #fbf9f8;
+    --card-bg: #ffffff;
+    --text-primary: #1b1c1c;
+    --text-muted: #44474b;
+    --border-color: #c5c6cb;
+    --border-light: #e4e2e2;
+}
+
+body {
+    background-color: var(--parchment-bg);
+    color: var(--text-primary);
+    font-family: 'Hanken Grotesk', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6, .brand-font {
+    font-family: 'Libre Caslon Text', serif;
+    font-weight: 400;
+}
+
+/* Custom Navigation Bar */
+.navbar-custom {
+    background-color: var(--parchment-bg);
+    border-bottom: 1px solid var(--border-light);
+    padding: 15px 0;
+}
+.navbar-custom .navbar-brand {
+    font-family: 'Libre Caslon Text', serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--primary-dark) !important;
+}
+.navbar-custom .nav-link {
+    color: var(--text-muted) !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+.navbar-custom .nav-link:hover, .navbar-custom .nav-link.active {
+    color: var(--accent-gold-dark) !important;
+}
+
+/* Custom Buttons */
+.btn-dark-atelier {
+    background-color: var(--primary-dark);
+    color: #ffffff;
+    border: 1px solid var(--primary-dark);
+    border-radius: 2px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+.btn-dark-atelier:hover {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.btn-gold-atelier {
+    background-color: var(--accent-gold);
+    color: var(--primary-dark);
+    border: 1px solid var(--accent-gold);
+    border-radius: 2px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+.btn-gold-atelier:hover {
+    background-color: #d4ae65;
+    color: var(--primary-dark);
+}
+
+.btn-outline-atelier {
+    background-color: transparent;
+    color: var(--primary-dark);
+    border: 1px solid var(--primary-dark);
+    border-radius: 2px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+.btn-outline-atelier:hover {
+    background-color: var(--primary-dark);
+    color: #ffffff;
+}
+
+/* Custom Cards */
+.card-traditional {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-traditional:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+}
+.card-traditional .card-header-maroon {
+    background-color: var(--primary-dark);
+    color: #ffffff;
+    border-bottom: 2px solid var(--accent-gold);
+    padding: 15px;
+}
+
+/* Measurement Input Styling */
+.form-input-line {
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    background: transparent;
+    border-radius: 0;
+    padding: 8px 5px;
+    transition: border-color 0.3s ease;
+}
+.form-input-line:focus {
+    border-bottom: 1px solid var(--primary-dark);
+    box-shadow: none;
+    background: transparent;
+}
+
+/* Footer Section */
+.footer-custom {
+    background-color: var(--parchment-bg);
+    color: var(--text-primary);
+    border-top: 1px solid var(--border-light);
+    margin-top: auto;
+}
+.footer-custom a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.footer-custom a:hover {
+    color: var(--primary-dark);
+}
+
+/* Progress Tracking Bar */
+.progress-container {
+    margin: 20px 0;
+}
+.progress-bar-custom {
+    background-color: var(--accent-gold);
+}
+.progress-step-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+.progress-step-text.active {
+    color: var(--primary-dark);
+}
+
+/* Hero Section */
+.traditional-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)), url('https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=1600') no-repeat center center;
+    background-size: cover;
+    color: #ffffff;
+    padding: 140px 0;
+    text-align: center;
+    border-bottom: 1px solid var(--border-light);
+}

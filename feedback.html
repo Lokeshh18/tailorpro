@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback & Reviews | TailorPro</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .text-xxs {
+            font-size: 0.7rem;
+        }
+        .star-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+        .star-icon:hover {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <!-- Dynamic Bootstrap Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand brand-font" href="index.html">TailorPro</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <!-- Populated dynamically by app.js -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container py-5 mt-5">
+        <div class="row my-5 g-5">
+            <!-- Left Info & Feedbacks List Column -->
+            <div class="col-lg-6">
+                <span class="text-uppercase text-muted font-semibold tracking-wider text-xs block mb-2">Customer Voice</span>
+                <h1 class="display-5 brand-font mt-2 mb-4">Customer <span class="italic text-muted">Reviews</span></h1>
+                <p class="text-muted text-sm leading-relaxed mb-4">TailorPro is built on customer trust. We constantly refine our sewing techniques, pattern grading, and fit metrics. Share your review of our tailoring work directly with our master tailors.</p>
+                
+                <!-- Feedback Column (Feed of Reviews visible to everyone) -->
+                <div class="border-top border-light pt-4 mt-4">
+                    <h3 class="brand-font mb-4 text-dark border-bottom pb-2">Recent Customer Feedbacks</h3>
+                    <div id="reviewsList" class="overflow-y-auto pe-2" style="max-height: 480px;">
+                        <div class="py-4 text-center text-muted">
+                            <div class="spinner-border spinner-border-sm text-dark me-2" role="status"></div>
+                            Loading recent feedbacks...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Form Column -->
+            <div class="col-lg-6">
+                <div class="card card-traditional p-4 p-md-5 rounded-0 border-light sticky-top" style="top: 100px; z-index: 10;">
+                    <h3 class="brand-font mb-2 text-dark">Submit Feedback</h3>
+                    <!-- Logged in User Display -->
+                    <p class="text-xs text-muted mb-4 border-bottom pb-3 font-semibold uppercase tracking-wider">
+                        Posting as: <span class="text-dark font-bold" id="postingAsUser">Guest User</span>
+                    </p>
+                    
+                    <form id="feedbackForm" onsubmit="submitFeedbackForm(event)">
+                        <div class="row g-3">
+                            <!-- Star Rating Input (till 5) -->
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label text-xs font-semibold uppercase text-muted tracking-wider d-block">Overall Rating</label>
+                                    <div class="d-flex gap-2 fs-3 text-warning" id="starRatingContainer">
+                                        <span class="material-symbols-outlined cursor-pointer star-icon text-warning" data-val="1">star</span>
+                                        <span class="material-symbols-outlined cursor-pointer star-icon text-warning" data-val="2">star</span>
+                                        <span class="material-symbols-outlined cursor-pointer star-icon text-warning" data-val="3">star</span>
+                                        <span class="material-symbols-outlined cursor-pointer star-icon text-warning" data-val="4">star</span>
+                                        <span class="material-symbols-outlined cursor-pointer star-icon text-warning" data-val="5">star</span>
+                                    </div>
+                                    <input type="hidden" id="selectedRating" value="5" />
+                                </div>
+                            </div>
+                            
+                            <!-- Feedback Message Textbox -->
+                            <div class="col-md-12">
+                                <div class="mb-4">
+                                    <label class="form-label text-xs font-semibold uppercase text-muted tracking-wider">Your Review & Comments</label>
+                                    <textarea id="fb_message" class="form-control border-light rounded-0 font-bold" placeholder="Share your experience stitching with us..." rows="4" required></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <button class="btn btn-dark-atelier w-100 py-3 font-semibold uppercase tracking-wider rounded-0" type="submit" id="fb_submit_btn">SUBMIT REVIEW</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Custom Footer -->
+    <footer class="footer-custom py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h4 class="brand-font mb-4 text-dark">TailorPro</h4>
+                    <p class="opacity-75 text-sm">Stitching modern formal and casual wear with digital precision fitting, cloud tracking, and premium craftsmanship.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="brand-font mb-4 text-xs font-bold text-uppercase tracking-wider text-dark">Quick Links</h5>
+                    <ul class="list-unstyled space-y-2 text-sm">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="gallery.html">Garment Gallery</a></li>
+                        <li><a href="orders.html">Place Stitching Order</a></li>
+                        <li><a href="feedback.html">Customer Reviews</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="brand-font mb-4 text-xs font-bold text-uppercase tracking-wider text-dark">Our Location</h5>
+                    <p class="opacity-75 text-sm leading-relaxed">
+                        Palladam<br>
+                        Tirupur, Tamil Nadu<br>
+                        641664, India<br>
+                        Phone: 8973911995
+                    </p>
+                </div>
+            </div>
+            <hr class="border-light opacity-50 my-4">
+            <div class="text-center opacity-75 text-xs text-uppercase tracking-wider">
+                © 2026 TailorPro. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Supabase Cloud SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Config and Controllers -->
+    <script src="js/config.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        let currentRating = 5;
+        let loggedInUser = null;
+
+        document.addEventListener("DOMContentLoaded", async function() {
+            // Load and verify user
+            const userStr = localStorage.getItem("tailorpro_current_user");
+            if (!userStr) {
+                alert("Please sign in to view and post feedback.");
+                window.location.href = "login.html";
+                return;
+            }
+            loggedInUser = JSON.parse(userStr);
+            document.getElementById("postingAsUser").innerText = loggedInUser.name;
+
+            // Load and display recent reviews
+            await loadFeedbacks();
+
+            // Set up star rating interactive click events
+            const stars = document.querySelectorAll('#starRatingContainer .star-icon');
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    currentRating = parseInt(star.getAttribute('data-val'));
+                    document.getElementById('selectedRating').value = currentRating;
+                    updateStarsUI();
+                });
+            });
+            updateStarsUI();
+        });
+
+        // Update star selection highlighting UI
+        function updateStarsUI() {
+            const stars = document.querySelectorAll('#starRatingContainer .star-icon');
+            stars.forEach(star => {
+                const val = parseInt(star.getAttribute('data-val'));
+                if (val <= currentRating) {
+                    star.style.fontVariationSettings = "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48";
+                    star.classList.add('text-warning');
+                    star.classList.remove('text-muted');
+                } else {
+                    star.style.fontVariationSettings = "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48";
+                    star.classList.remove('text-warning');
+                    star.classList.add('text-muted');
+                }
+            });
+        }
+
+        // Fetch recent feedbacks and render list
+        async function loadFeedbacks() {
+            const list = document.getElementById("reviewsList");
+            try {
+                const feedbacks = await window.db.getFeedbacks();
+                if (feedbacks.length === 0) {
+                    list.innerHTML = `<p class="text-xs text-muted py-3">No reviews posted yet. Be the first to share your experience!</p>`;
+                    return;
+                }
+                
+                let html = "";
+                feedbacks.forEach(item => {
+                    const rating = parseInt(item.category) || 5;
+                    const dateStr = item.submitted_at ? new Date(item.submitted_at).toLocaleDateString("en-IN", {
+                        year: 'numeric', month: 'short', day: 'numeric'
+                    }) : "Just now";
+                    
+                    let starsHtml = "";
+                    for (let i = 1; i <= 5; i++) {
+                        if (i <= rating) {
+                            starsHtml += `<span class="material-symbols-outlined text-warning" style="font-size: 1.1rem; font-variation-settings: 'FILL' 1;">star</span>`;
+                        } else {
+                            starsHtml += `<span class="material-symbols-outlined text-muted" style="font-size: 1.1rem; font-variation-settings: 'FILL' 0;">star</span>`;
+                        }
+                    }
+                    
+                    html += `
+                        <div class="card card-traditional p-3 mb-3 border-light rounded-0 bg-white shadow-sm">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="font-bold text-dark text-xs text-uppercase tracking-wider">${item.name}</span>
+                                <span class="text-muted text-xxs">${dateStr}</span>
+                            </div>
+                            <div class="d-flex mb-2">${starsHtml}</div>
+                            <p class="text-muted text-xs leading-relaxed mb-0 font-light" style="white-space: pre-line;">${item.message}</p>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html;
+            } catch (err) {
+                console.error("Error loading reviews:", err);
+                list.innerHTML = `<p class="text-xs text-danger">Failed to load recent reviews.</p>`;
+            }
+        }
+
+        // Handle feedback submission
+        async function submitFeedbackForm(e) {
+            e.preventDefault();
+            if (!loggedInUser) return;
+
+            const ratingVal = document.getElementById("selectedRating").value;
+            const message = document.getElementById("fb_message").value.trim();
+
+            const btn = document.getElementById("fb_submit_btn");
+            btn.disabled = true;
+            btn.innerText = "SUBMITTING...";
+
+            try {
+                // Submit rating value in category column to avoid database schema alterations
+                const res = await window.db.submitFeedback(
+                    loggedInUser.name, 
+                    loggedInUser.email, 
+                    ratingVal.toString(), 
+                    message
+                );
+                
+                if (res.success) {
+                    alert("Thank you! Your review has been posted successfully.");
+                    document.getElementById("fb_message").value = "";
+                    currentRating = 5;
+                    updateStarsUI();
+                    document.getElementById("selectedRating").value = "5";
+                    
+                    // Reload feedbacks list to show the new entry immediately
+                    await loadFeedbacks();
+                } else {
+                    alert("Failed to submit review: " + res.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("An error occurred during submission.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "SUBMIT REVIEW";
+            }
+        }
+    </script>
+</body>
+</html>
