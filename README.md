@@ -1,4 +1,4 @@
-# TailorPro Atelier 🧵
+# TailorPro 🧵
 
 A full-stack custom tailoring web application where customers can browse garments, place orders with body measurements, and track their tailoring progress.
 
